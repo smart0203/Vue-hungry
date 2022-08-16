@@ -1,0 +1,47 @@
+.top-categories-slider {
+  .swiper-slide.is-loading {
+    width: calc(100% / 4);
+
+    @screen lg {
+      width: calc(100% / 7);
+    }
+  }
+}
+
+.top-categories-item {
+  width: 110px;
+
+  @screen md {
+    width: 100px;
+  }
+
+  @screen lg {
+    width: 125px;
+  }
+
+  @screen xl {
+    width: 145px;
+  }
+
+  .cover {
+    height: 135px;
+
+    @screen md {
+      height: 125px;
+    }
+
+    @screen lg {
+      height: 150px;
+    }
+
+    @screen xl {
+      height: 180px;
+    }
+
+    @apply rounded-lg bg-gray-400 border;
+  }
+
+  .label {
+    @apply my-2;
+  }
+}

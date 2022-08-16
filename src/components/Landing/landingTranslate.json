@@ -1,0 +1,26 @@
+{
+  "en": {
+    "remainingAmount": "*Remaining amount will need to be paid at restaurant.",
+    "totalChargeAmount": "Total Charge Amount",
+    "totalPrepaidAmound": "Total Prepaid Amount",
+    "totalOrderValue": "Total Order Value",
+    "totalPayAtRestaurant": "Total Pay At Restaurant",
+    "pendingCharge": "We Will Charge Your Payment Once The Restaurant Confirm Your Seat",
+    "chargedSummary": "Charged Summary",
+    "viewMenu": "View Menu",
+    "deliveryFee": "Delivery Fee",
+    "closeDetail": "Close Details"
+  },
+  "th": {
+    "remainingAmount": "*ชำระเงินที่หน้าร้าน.",
+    "totalPrepaidAmound": "จำนวนเงินที่ชำระล่วงหน้า",
+    "totalChargeAmount": "ราคาสุทธิ",
+    "totalOrderValue": "ยอดรวมทั้งสิ้น",
+    "totalPayAtRestaurant": "ยอดรวมที่ต้องจ่ายที่ร้านอาหาร",
+    "pendingCharge": "เมื่อร้านอาหารยืนยันที่นั่งแล้ว ทางร้านจะขอเก็บค่ามัดจำ",
+    "chargedSummary": "สรุปยอดเงิน",
+    "viewMenu": "ดูเมนู",
+    "deliveryFee": "ค่าจัดส่ง",
+    "closeDetail": "ปิด"
+  }
+}

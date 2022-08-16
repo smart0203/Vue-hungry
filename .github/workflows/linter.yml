@@ -1,0 +1,39 @@
+---
+name: Lint Code Base
+
+on:
+  push:
+    branches-ignore: [master]
+  pull_request:
+    branches: [master]
+
+jobs:
+  build:
+    name: Lint Code Base
+    runs-on: ubuntu-latest
+    steps:
+    - name: Checkout Code
+      uses: actions/checkout@v2
+      with:
+        fetch-depth: 0
+    - name: Use Node.js 14
+      uses: actions/setup-node@v2
+      with:
+        node-version: '14'
+    - name: Installing dependencies
+      run: npm install -D eslint-plugin-cypress@2.11.1 eslint-plugin-prettier@3.1.1 eslint-plugin-vue@8.3.0 @typescript-eslint/parser@5.11.0 @typescript-eslint/eslint-plugin@5.11.0 --ignore-scripts
+    - name: Lint Code Base
+      uses: github/super-linter/slim@v4
+      env:
+        VALIDATE_ALL_CODEBASE: false
+        DEFAULT_BRANCH: master
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        LINTER_RULES_PATH: /
+        TYPESCRIPT_DEFAULT_STYLE: prettier
+        JAVASCRIPT_DEFAULT_STYLE: prettier
+        VALIDATE_JAVASCRIPT_STANDARD: false
+        VALIDATE_JAVASCRIPT_ES: true
+        VALIDATE_TYPESCRIPT_ES: true
+        VALIDATE_TYPESCRIPT_STANDARD: false
+        JAVASCRIPT_ES_CONFIG_FILE: .eslintrc.json
+        TYPESCRIPT_ES_CONFIG_FILE: .eslintrc.json

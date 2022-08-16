@@ -1,0 +1,83 @@
+.restaurant-card {
+  &.card-shadow {
+    box-shadow: 0 3px 6px rgba(0, 0, 0, 0.16);
+  }
+
+  .restaurant-info {
+    @screen lg {
+      height: 45px;
+    }
+    min-height: 27px;
+  }
+  .restaurant-image {
+    width: 100%;
+    object-fit: cover;
+  }
+
+  .restaurant-rating {
+    &.new-restaurant {
+      width: auto;
+    }
+
+    min-width: 32px;
+    min-height: 13px;
+
+    @screen lg {
+      width: 47px;
+      height: 17px;
+    }
+  }
+
+  .icon {
+    width: 9px;
+
+    @screen lg {
+      width: 14px;
+    }
+  }
+
+  .pricetag-icon {
+    width: 8px;
+    height: 8px;
+
+    @screen lg {
+      width: 12px;
+      height: 12px;
+    }
+  }
+
+  .package-type {
+    padding-left: 20px;
+    padding-right: 5px;
+    color: white;
+    line-height: 1.5;
+    margin-bottom: 10px;
+    font-weight: 900;
+
+    &.ayce {
+      background: var(--package-ayce);
+      text-shadow: 1px 1px 1px rgba(0, 0, 0, 0.257);
+      color: black;
+    }
+
+    &.hah {
+      background: var(--package-hah);
+    }
+
+    &.pp {
+      background: var(--package-pp);
+    }
+
+    &.bfp {
+      background: var(--package-bfp);
+    }
+
+    &.hs {
+      background: var(--package-hs);
+    }
+
+    &.sm {
+      background: var(--package-sm);
+    }
+  }
+}

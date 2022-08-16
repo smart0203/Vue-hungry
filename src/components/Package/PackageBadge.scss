@@ -1,0 +1,27 @@
+.package-badge {
+  display: inline-block;
+  width: 15px;
+  height: 15px;
+  border-radius: 50%;
+  &.ayce {
+    background: var(--package-ayce);
+  }
+  &.hah {
+    background: var(--package-hah);
+  }
+  &.pp {
+    background: var(--package-pp);
+  }
+  &.bfp {
+    background: var(--package-bfp);
+  }
+  &.hs {
+    background: var(--package-hs);
+  }
+  &.sm {
+    background: var(--package-sm);
+  }
+  &.xp {
+    background: var(--package-xp);
+  }
+}

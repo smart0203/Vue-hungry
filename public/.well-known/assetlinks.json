@@ -1,0 +1,9 @@
+[{
+    "relation": ["delegate_permission/common.handle_all_urls"],
+    "target": {
+      "namespace": "android_app",
+      "package_name": "com.hb.hungryhub",
+      "sha256_cert_fingerprints":
+      ["DE:DE:9D:28:B9:0C:FA:15:F2:42:5D:20:73:DF:E4:FB:D7:69:B8:88:7D:27:6A:B8:C2:41:86:86:D9:28:C0:EB"]
+    }
+}]

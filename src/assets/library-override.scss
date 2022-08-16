@@ -1,0 +1,32 @@
+// input phone plugin css
+.iti.iti--separate-dial-code {
+  width: 100%;
+}
+
+.iti--separate-dial-code .iti__selected-flag {
+  background: none !important;
+}
+
+.iti--separate-dial-code .iti__selected-dial-code {
+  font-size: 0.875rem;
+}
+
+// swiper slider css
+.swiper-pagination-bullet-active {
+  background: #7e7e7e !important;
+}
+
+// appsfleyer banner z-index override (because conflicted with alert)
+#af-smart-banner.afb-container {
+  z-index: 1111;
+}
+
+// vue-toastification style overrinde
+.Vue-Toastification__toast.top-right.hh-toast {
+  min-height: 32px;
+  padding: 12px 14px;
+
+  .Vue-Toastification__icon {
+    margin: auto 9px auto 0px;
+  }
+}

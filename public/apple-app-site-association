@@ -1,0 +1,24 @@
+{
+  "applinks": {
+    "apps": [],
+    "details": [
+      {
+        "appID": "8Z9PJ6LL32.com.HungryHubiOSApp",
+        "paths": [
+          "/",
+          "/staycation*",
+          "/rooftop-promotion*",
+          "/the-best-restaurant-deals-in-phuket*",
+          "/marriott-s-delicious-deals-in-bangkok*",
+          "/the-coffee-club-best-buffet-promotion*",
+          "/en/restaurants/*",
+          "/th/restaurants/*",
+          "/restaurants/*"
+        ]
+      }
+    ]
+  },
+  "webcredentials": {
+    "apps": ["8Z9PJ6LL32.com.HungryHubiOSApp"]
+  }
+}

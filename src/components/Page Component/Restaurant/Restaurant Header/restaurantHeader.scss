@@ -1,0 +1,10 @@
+.vr-tour-step {
+  @apply bg-transparent;
+  .shepherd-text {
+    @apply text-white text-lg ml-5;
+  }
+}
+
+.shepherd-modal-overlay-container.shepherd-modal-is-visible {
+  opacity: 0.85;
+}

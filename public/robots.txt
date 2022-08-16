@@ -1,0 +1,4 @@
+User-agent: *
+Disallow: /*?*utm_source
+Disallow:
+Sitemap: https://web.hungryhub.com/sitemap.xml.gz

@@ -1,0 +1,45 @@
+.user-avatar {
+  width: 65px;
+  height: 65px;
+  border-radius: 18px;
+}
+
+.review-user {
+  width: 70px;
+}
+
+.review-image {
+  width: 60px;
+  height: 60px;
+}
+
+.left-section {
+  width: 80px;
+}
+
+@screen md {
+  .user-avatar {
+    width: 70px;
+    height: 70px;
+  }
+}
+
+.show-more {
+  background: rgba(0, 0, 0, 0.639);
+}
+
+.custom-gray {
+  color: #848484;
+}
+
+[class^="icon-"]::before,
+[class*=" icon-"]::before {
+  margin: 0;
+}
+
+.blogger-review-slider-items {
+  width: 100%;
+  @screen lg {
+    @apply w-1/3;
+  }
+}

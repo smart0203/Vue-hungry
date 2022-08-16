@@ -1,0 +1,31 @@
+.restaurant-card-big {
+  .pricetag-icon {
+    width: 10px;
+    height: 10px;
+    @screen lg {
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  .card-shadow {
+    box-shadow: 0px 3px 6px rgba(0, 0, 0, 0.16);
+  }
+
+  .icon {
+    width: 10px;
+    height: 10px;
+    @screen lg {
+      width: 17px;
+      height: 17px;
+    }
+  }
+
+  .cover-img {
+    height: 100%;
+    width: 180px;
+    @screen lg {
+      width: 415px;
+    }
+  }
+}

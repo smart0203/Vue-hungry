@@ -1,0 +1,50 @@
+@import "@/components/Shared/RestaurantCardSlider.scss";
+@import "@/components/Page Component/Home/PendingBooking/PendingBooking.scss";
+@import "@/components/Page Component/Home/Promotion/PromotionView.scss";
+@import "@/components/Page Component/Home/PopularBrand/PopularBrandView.scss";
+@import "@/components/Page Component/Home/TopCategories/TopCategoriesView.scss";
+@import "@/components/Page Component/Home/PackageType/PackageTypeView.scss";
+
+.home-page {
+  .nearme-slider-height {
+    min-height: 140px;
+  }
+
+  .home-slider-height {
+    min-height: 235px;
+
+    @screen lg {
+      min-height: 300px;
+    }
+  }
+
+  .swiper-button-next::after {
+    content: none;
+  }
+
+  .swiper-button-prev::after {
+    content: none;
+  }
+
+  .home-slider-next,
+  .home-slider-prev {
+    top: 40%;
+  }
+
+  .restaurant-card-slider .swiper-button-next,
+  .home-slider-next {
+    right: -55px;
+  }
+
+  .restaurant-card-slider .swiper-button-prev,
+  .home-slider-prev {
+    left: -55px;
+  }
+
+  .section-title {
+    @apply my-2 text-sm;
+    @screen lg {
+      @apply font-black text-center text-xl my-4;
+    }
+  }
+}

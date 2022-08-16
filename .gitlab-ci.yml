@@ -1,0 +1,377 @@
+# Copyright (c) 2020 AppServation Co., Ltd. All Rights Reserved.
+# This is licensed software from AppServation Co., Ltd,
+# for limitations and restrictions contact company contract
+# manager.
+
+stages:
+- .pre
+- test
+- build-artifacts
+- push-cache
+- pull-cache
+- build-image
+- scan
+- push
+- deploy
+- cleanup
+- .post
+
+before_script:
+- echo "I'm starting"
+# Export REF_NAME based on CI_COMMIT_REF_NAME
+- export $(bash ./deployment/scripts/parse_ref_name.sh)
+- export NAMESPACE=hungryhub
+- export VERSION=${REF_NAME}-${CI_COMMIT_SHORT_SHA}
+# Help to determine the version
+- echo ${VERSION}
+
+after_script:
+- echo "It's done"
+
+.build_template: &build |
+  if [ ! -z ${PIPELINE_TARGET} ]; then
+
+    if [ ${PIPELINE_TARGET} != "production" ] || [ ${PIPELINE_TARGET} != "stage" ]; then
+      echo "PIPELINE_TARGET must either production or stage"
+      exit 1
+    fi
+
+    if [ ${PIPELINE_TARGET} == "production" ]; then
+      cp ${master_env} .env
+    else
+      cp ${develop_env} .env
+    fi
+  elif [ ${CI_COMMIT_REF_NAME} == "master" ]; then
+    cp ${master_env} .env
+  else
+    cp ${develop_env} .env
+  fi
+
+# if [ ${CI_COMMIT_REF_NAME} == "master" ] || [ ${PIPELINE_TARGET} == "production" ]; then
+#   cp ${master_env} .env
+# else
+#   cp ${develop_env} .env
+# fi
+
+.push_artifact_template: &cache_artifact |
+  export AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY}
+  export AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY}
+
+test-web:
+  stage: test
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - make test
+  allow_failure: true
+  except:
+  - master
+  - develop
+
+build-artifacts:
+  stage: build-artifacts
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - rm -rf .env
+  - *build
+  - if [ ! -f .env ]; then echo "required env is not exists"; exit 1; fi
+  - |
+    if [ ! -z ${PIPELINE_TARGET} ]; then
+      if [ ${PIPELINE_TARGET} == "production" ]; then
+        if ! grep -qs "web.hungryhub.com" .env ; then echo "this is not the correct env"; exit 1; fi
+      fi
+    elif [ ${CI_COMMIT_REF_NAME} == "master" ]; then
+      if ! grep -qs "web.hungryhub.com" .env ; then echo "this is not the correct env"; exit 1; fi
+    fi
+  - make build-artifacts
+  rules:
+  - if: '($CI_COMMIT_REF_NAME == "master")'
+  - if: '($CI_PIPELINE_SOURCE == "web") && ($PIPELINE_TARGET == "production")'
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_PIPELINE_ID}-artifacts"
+    paths:
+    - artifacts
+    expire_in: 1h
+
+build-develop-artifacts:
+  stage: build-artifacts
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - *build
+  - make build-artifacts
+  rules:
+  - if: '($CI_COMMIT_REF_NAME == "develop")'
+  - if: '($CI_PIPELINE_SOURCE == "web") && ($PIPELINE_TARGET == "stage")'
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_PIPELINE_ID}-artifacts"
+    paths:
+    - artifacts
+    expire_in: 1h
+
+push-artifact:
+  stage: push-cache
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - *cache_artifact
+  - aws s3 sync artifacts/dist s3://${AWS_BUCKET}
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+  dependencies:
+  - build-artifacts
+
+pull-artifact:
+  stage: pull-cache
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - *cache_artifact
+  - mkdir -p cached-artifacts/dist
+  - aws s3 sync s3://${AWS_BUCKET} cached-artifacts/dist
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_PIPELINE_ID}-cached-artifacts"
+    paths:
+    - cached-artifacts
+    expire_in: 1h
+
+build-image:
+  stage: build-image
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - *build
+  - *cache_artifact
+  - aws s3 cp s3://${AWS_S3_SITEMAP_BUCKET}/web.xml.gz cached-artifacts/dist/sitemap.xml.gz
+  - make build
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+  dependencies:
+  - pull-artifact
+
+build-stage-image:
+  stage: build-image
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - *build
+  - *cache_artifact
+  - aws s3 cp s3://${AWS_S3_SITEMAP_BUCKET}/web.xml.gz artifacts/dist/sitemap.xml.gz
+  - sed -i 's/cached-artifacts/artifacts/g' Dockerfile
+  - sed -i '/if ($prerender = 1) {/,/try_files/d' deployment/conf/web.conf
+  - sed -i '/proxy_set_header Connection */a \\t\ttry_files $uri $uri\/ @index;' deployment/conf/web.conf
+  - make build
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "stage"
+    - $CI_COMMIT_REF_NAME == "develop"
+  dependencies:
+  - build-develop-artifacts
+
+scan-image:
+  stage: scan
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - make image-scan
+  cache:
+    paths:
+    - trivycache
+  artifacts:
+    name: "${CI_PROJECT_NAME}-${CI_PIPELINE_ID}-image-scan-artifact"
+    paths:
+    - scan-result.txt
+    expire_in: 1h
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+
+push-image:
+  stage: push
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - bash deployment/scripts/push/push_image.sh
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+    - $CI_COMMIT_REF_NAME == "develop"
+
+# deploy-surge:
+#   stage: deploy
+#   tags:
+#   - hungryhub
+#   - linux
+#   script:
+#   - export PATH=${PATH}:/root/.nvm/versions/node/v12.18.3/bin
+#   - cp artifacts/dist/index.html artifacts/dist/200.html
+#   - surge --project artifacts/dist --domain web-staging.hungryhub.com
+#   rules:
+#   - if: '($CI_COMMIT_MESSAGE =~ /distribute-to-surge/) || ($CI_COMMIT_REF_NAME == "develop")'
+#   - if: '($CI_PIPELINE_SOURCE == "web") && ($PIPELINE_TARGET == "stage")'
+#   dependencies:
+#   - build-develop-artifacts
+
+deploy-web:
+  stage: deploy
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - |
+    if [ ${CI_COMMIT_REF_NAME} == "master" ] || [ ${PIPELINE_TARGET} == "production" ]; then
+      export KUBERNETES_NAMESPACE=hungryhub
+    else
+      export KUBERNETES_NAMESPACE=ci-experiment
+    fi
+
+    helm template --set serviceAccount.create=false \
+      --set canary.namespace=${CANARY_NAMESPACE} \
+      --set canary.gateway=${CANARY_GATEWAY} \
+      --set canary.host=${CANARY_HOST} \
+      --set canary.skipAnalysis=${CANARY_SKIP_ANALYSIS} \
+      --set fullnameOverride=${INSTANCE_NAME} \
+      --set image.repository=${AWS_ECR_ENDPOINT}/${NAMESPACE}/${CI_PROJECT_NAME} \
+      --set image.tag=${VERSION} \
+      --set configMap.AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY} \
+      --set configMap.AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY} \
+      -f ${CI_PROJECT_DIR}/deployment/helm/${CI_PROJECT_NAME}/values.yaml \
+      ${INSTANCE_NAME} ${CI_PROJECT_DIR}/deployment/helm/${CI_PROJECT_NAME} > ${INSTANCE_NAME}.yml
+  # Debug
+  - cat ${INSTANCE_NAME}.yml
+  - kubectl apply -n ${KUBERNETES_NAMESPACE} -f ${INSTANCE_NAME}.yml
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+  variables:
+    INSTANCE_NAME: hungryhub-optimus-prime
+    CANARY_NAMESPACE: hungryhub
+    CANARY_GATEWAY: hungryhub-gateway
+    CANARY_HOST: web.hungryhub.com
+    CANARY_SKIP_ANALYSIS: "false"
+  environment:
+    name: master
+  dependencies: []
+
+deploy-stage-web:
+  stage: deploy
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - |
+    export KUBERNETES_NAMESPACE=hungryhub-stage
+    helm template --set serviceAccount.create=false \
+      --set autoscaling.enabled=true \
+      --set canary.skipAnalysis=${CANARY_SKIP_ANALYSIS} \
+      --set canary.gateway=${CANARY_GATEWAY} \
+      --set canary.host=${CANARY_HOST} \
+      --set canary.namespace=${CANARY_NAMESPACE} \
+      --set fullnameOverride=${INSTANCE_NAME} \
+      --set image.repository=${AWS_ECR_ENDPOINT}/${NAMESPACE}/${CI_PROJECT_NAME} \
+      --set image.tag=${VERSION} \
+      --set configMap.AWS_ACCESS_KEY_ID=${AWS_ACCESS_KEY} \
+      --set configMap.AWS_SECRET_ACCESS_KEY=${AWS_SECRET_KEY} \
+      -f ${CI_PROJECT_DIR}/deployment/helm/${CI_PROJECT_NAME}/values.yaml \
+      ${INSTANCE_NAME} ${CI_PROJECT_DIR}/deployment/helm/${CI_PROJECT_NAME} > ${INSTANCE_NAME}.yml
+  # Debug
+  - cat ${INSTANCE_NAME}.yml
+  - kubectl apply -n ${KUBERNETES_NAMESPACE} -f ${INSTANCE_NAME}.yml
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "stage"
+    - $CI_COMMIT_REF_NAME == "develop"
+  variables:
+    INSTANCE_NAME: hungryhub-optimus-prime
+    CANARY_NAMESPACE: hungryhub-stage
+    CANARY_GATEWAY: hungryhub-stage-gateway
+    CANARY_HOST: web-staging.hungryhub.com
+    CANARY_SKIP_ANALYSIS: "false"
+  environment:
+    name: stage
+  dependencies: []
+
+clear-cloudflare-cache:
+  stage: cleanup
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - |
+    curl -X POST "https://api.cloudflare.com/client/v4/zones/104b9a2a601c57619abee0706a54b28a/purge_cache" \
+     -H "Authorization: Bearer ${CLOUDFLARE_API_TOKEN}" \
+     -H "Content-Type: application/json" \
+     --data '{"purge_everything":true}'
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+
+cleanup-ecr-image:
+  stage: cleanup
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - bash deployment/scripts/cleanup/cleanup_aws_ecr.sh
+  allow_failure: true
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+    - $CI_COMMIT_REF_NAME == "develop"
+  dependencies:
+  - build-image
+
+cleanup-expired-artifacts:
+  stage: cleanup
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - *cache_artifact
+  - bash deployment/scripts/cleanup/cleanup_expired_artifacts.sh
+  allow_failure: true
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+  dependencies:
+  - build-image
+
+cleanup-dangling-image:
+  stage: cleanup
+  tags:
+  - hungryhub
+  - linux
+  script:
+  - docker rmi $(docker images -f "dangling=true" -q) || true
+  allow_failure: true
+  only:
+    variables:
+    - $CI_PIPELINE_SOURCE == "web" && $PIPELINE_TARGET == "production"
+    - $CI_COMMIT_REF_NAME == "master"
+    - $CI_COMMIT_REF_NAME == "develop"
+  dependencies:
+  - build-image

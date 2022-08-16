@@ -1,0 +1,62 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Document</title>
+    <link
+      href="https://unpkg.com/tailwindcss@^2/dist/tailwind.min.css"
+      rel="stylesheet"
+    />
+    <link
+      href="https://fonts.googleapis.com/css2?family=Lato:wght@300;400;700;900&display=swap"
+      rel="stylesheet preload"
+    />
+    <style>
+      html {
+        font-family: "Lato", sans-serif;
+      }
+
+      .wrapper {
+        height: 100%;
+        color: white;
+        background-color: #c41f23;
+      }
+
+      .hero-image {
+        width: 155px;
+      }
+
+      @media (min-width: 1024px) {
+        .hero-image {
+          width: 260px;
+        }
+      }
+    </style>
+  </head>
+
+  <body>
+    <div class="wrapper">
+      <div class="container lg:mx-auto">
+        <div
+          class="flex flex-col items-center justify-center h-screen pb-24 mx-4"
+        >
+          <img
+            src="./not-found-hero-image.png"
+            class="mb-4 hero-image"
+            alt="hero image"
+            loading="lazy"
+          />
+          <h1 class="text-2xl font-black lg:text-5xl">Oops …</h1>
+          <h2 class="my-2 text-sm font-black lg:text-2xl">
+            It looks like this your browser is not supported
+          </h2>
+          <h2 class="text-sm font-black text-center lg:text-2xl">
+            Please update your browser to get get our deals and promotion 😀
+          </h2>
+        </div>
+      </div>
+    </div>
+  </body>
+</html>

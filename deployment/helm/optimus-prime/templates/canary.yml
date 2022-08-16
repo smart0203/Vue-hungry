@@ -1,0 +1,43 @@
+apiVersion: flagger.app/v1beta1
+kind: Canary
+metadata:
+  name: {{ include "optimus-prime.fullname" . }}
+spec:
+  provider: istio
+  skipAnalysis: {{ .Values.canary.skipAnalysis }}
+  targetRef:
+    apiVersion: apps/v1
+    kind: Deployment
+    name: {{ include "optimus-prime.fullname" . }}
+  autoscalerRef:
+    apiVersion: autoscaling/v2beta2
+    kind: HorizontalPodAutoscaler
+    name: {{ include "optimus-prime.fullname" . }}
+  service:
+    port: 80
+    gateways:
+      - {{ .Values.canary.namespace }}/{{ .Values.canary.gateway }}
+    hosts:
+      - {{ .Values.canary.host }}
+    retries:
+      attempts: 3
+      perTryTimeout: 2s
+      retryOn: "gateway-error,connect-failure,refused-stream"
+  analysis:
+    interval: 1m
+    iterations: 2
+    threshold: 2
+    metrics:
+      - name: request-success-rate
+        thresholdRange:
+          min: 10
+        interval: 1m
+      - name: request-duration
+        thresholdRange:
+          max: 500
+        interval: 1m
+    webhooks:
+      - name: load-test
+        url: http://flagger-loadtester.istio-system/
+        metadata:
+          cmd: "hey -z 1m -q 10 -c 2 http://{{ include "optimus-prime.fullname" . }}-canary.{{ .Values.canary.namespace }}/"

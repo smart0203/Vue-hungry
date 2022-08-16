@@ -1,0 +1,17 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+@layer utilities {
+  .red-checkbox {
+    @apply rounded cursor-pointer form-checkbox text-red-dark;
+  }
+
+  .big-checkbox {
+    @apply w-5 h-5;
+  }
+
+  .round-checkbox {
+    @apply rounded-full;
+  }
+}

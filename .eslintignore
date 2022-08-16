@@ -1,0 +1,6 @@
+deployment/
+public/
+dist/
+cypress/
+*.spec.js
+*.spec.ts

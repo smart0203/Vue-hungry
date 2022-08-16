@@ -1,0 +1,13 @@
+dist
+__mocks__
+.github
+.storybook
+cypress
+deployment
+local_ssl
+node_modules
+stories
+public
+*.yml
+*.md
+*.json

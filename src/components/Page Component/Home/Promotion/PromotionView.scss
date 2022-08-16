@@ -1,0 +1,33 @@
+.promotion-section-wrapper {
+  background: #fcdede;
+
+  .slider-next {
+    position: absolute;
+    top: 45%;
+    right: -50px;
+    z-index: 10;
+    cursor: pointer;
+  }
+
+  .slider-prev {
+    position: absolute;
+    top: 45%;
+    left: -50px;
+    z-index: 10;
+    cursor: pointer;
+  }
+}
+
+.promo-item {
+  width: 75%;
+  height: auto;
+
+  @screen md {
+    width: 45%;
+  }
+
+  @screen lg {
+    width: 25%;
+    height: 195px;
+  }
+}

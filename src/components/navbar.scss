@@ -1,0 +1,126 @@
+.hamburger-icon {
+  width: 20px;
+}
+
+.logo {
+  width: 30px;
+}
+
+a {
+  color: #263238;
+}
+
+@screen md {
+  .logo {
+    width: 130px;
+    height: 38px;
+  }
+}
+
+.searchbox-desktop {
+  top: 0;
+  right: 0;
+  // min-width: 30px;
+  width: 0;
+  height: 30px;
+  margin-left: auto;
+  overflow: hidden;
+  transition: width 0.3s;
+
+  &.with-fav-button {
+    width: 66px;
+  }
+}
+
+.searchbox-mobile {
+  position: relative;
+  min-width: 30px;
+  width: 0%;
+  height: 30px;
+  float: right;
+  overflow: hidden;
+  transition: width 0.3s;
+  border-radius: 25px;
+}
+
+.searchbox-separator {
+  width: 1px;
+
+  @apply pb-2 bg-gray-500;
+
+  @screen lg {
+    @apply mx-3;
+  }
+}
+
+.searchbox-input {
+  top: 0;
+  right: 0;
+  border: 0;
+  outline: 0;
+  width: 100%;
+  height: 30px;
+  margin: 0;
+  padding: 0 40px 0 0;
+  border-radius: 25px;
+}
+
+.searchbox-input::-webkit-input-placeholder {
+  @apply text-gray-500;
+}
+
+.searchbox-input:-moz-placeholder {
+  @apply text-gray-500;
+}
+
+.searchbox-input::-moz-placeholder {
+  @apply text-gray-500;
+}
+
+.searchbox-input:-ms-input-placeholder {
+  @apply text-gray-500;
+}
+
+.searchbox-icon,
+.searchbox-submit {
+  width: 30px;
+  height: 30px;
+  display: block;
+  position: absolute;
+  top: 0;
+
+  /* font-size: 22px; */
+  right: 0;
+  padding: 0;
+  margin: 0;
+  border: 0;
+  outline: 0;
+  line-height: 30px;
+  text-align: center;
+  cursor: pointer;
+  color: #fff;
+}
+
+.searchbox-open {
+  width: 100% !important;
+
+  @screen xl {
+    width: 400px !important;
+  }
+}
+
+.custom-dropdown {
+  @apply pl-1 text-center;
+}
+
+.custom-dropdown select {
+  /* Hide default arrow */
+  appearance: none;
+  width: 100%;
+  padding: 0 25px 0 10px;
+
+  @apply h-full bg-white;
+  position: relative;
+  background: url("~@/assets/icon-arrow-down-red.png") 90% 8px no-repeat;
+  background-size: 13px auto;
+}

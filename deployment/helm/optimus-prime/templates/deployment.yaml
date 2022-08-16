@@ -1,0 +1,77 @@
+apiVersion: apps/v1
+kind: Deployment
+metadata:
+  name: {{ include "optimus-prime.fullname" . }}
+  labels:
+    {{- include "optimus-prime.labels" . | nindent 4 }}
+spec:
+{{- if not .Values.autoscaling.enabled }}
+  replicas: {{ .Values.replicaCount }}
+{{- end }}
+  selector:
+    matchLabels:
+      app: {{ include "optimus-prime.fullname" . }}
+      {{- include "optimus-prime.selectorLabels" . | nindent 6 }}
+  template:
+    metadata:
+    {{- with .Values.podAnnotations }}
+      annotations:
+        {{- toYaml . | nindent 8 }}
+    {{- end }}
+      labels:
+        app: {{ include "optimus-prime.fullname" . }}
+        {{- include "optimus-prime.selectorLabels" . | nindent 8 }}
+    spec:
+      {{- with .Values.imagePullSecrets }}
+      imagePullSecrets:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      serviceAccountName: {{ include "optimus-prime.serviceAccountName" . }}
+      securityContext:
+        {{- toYaml .Values.podSecurityContext | nindent 8 }}
+      containers:
+        - name: optimus
+          securityContext:
+            {{- toYaml .Values.securityContext | nindent 12 }}
+          image: "{{ .Values.image.repository }}:{{ .Values.image.tag | default .Chart.AppVersion }}"
+          imagePullPolicy: {{ .Values.image.pullPolicy }}
+          ports:
+            - name: http
+              containerPort: 80
+              protocol: TCP
+          livenessProbe:
+            httpGet:
+              path: /
+              port: http
+          readinessProbe:
+            httpGet:
+              path: /
+              port: http
+          envFrom:
+          - configMapRef:
+              name: hungryhub-optimus-prime-config
+          volumeMounts:
+          - name: tz-config
+            mountPath: /etc/localtime
+          lifecycle:
+            postStart:
+              exec:
+                command: ["/bin/sh", "-c", "(crontab -l ; echo '30      2       *       *       *       aws s3 cp s3://${AWS_S3_SITEMAP_BUCKET}/web.xml.gz /usr/share/nginx/html/sitemap.xml.gz 2>&1 >> /root/cron.log'; echo '*/5     *       *       *       *       aws s3 cp s3://${AWS_S3_SITEMAP_BUCKET}/production_apple-app-site-association.p7m /usr/share/nginx/html/apple-app-site-association 2>&1 >> /root/cron.log') | crontab - && crond -b"]
+          resources:
+            {{- toYaml .Values.resources | nindent 12 }}
+      volumes:
+      - name: tz-config
+        hostPath:
+          path: /usr/share/zoneinfo/Asia/Jakarta
+      {{- with .Values.nodeSelector }}
+      nodeSelector:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.affinity }}
+      affinity:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}
+      {{- with .Values.tolerations }}
+      tolerations:
+        {{- toYaml . | nindent 8 }}
+      {{- end }}

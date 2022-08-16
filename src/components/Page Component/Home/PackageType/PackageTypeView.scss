@@ -1,0 +1,31 @@
+.package-type-section {
+  .swiper-slide {
+    max-width: 20%;
+  }
+
+  .swiper-slide.is-loading {
+    @screen lg {
+      @apply w-1/4;
+    }
+  }
+
+  .brand-item {
+    @apply flex flex-col items-center justify-center;
+
+    .circle {
+      width: 100px;
+      height: 100px;
+
+      @screen lg {
+        width: 120px;
+        height: 120px;
+      }
+
+      @apply mb-3;
+    }
+
+    .label {
+      @apply font-black;
+    }
+  }
+}

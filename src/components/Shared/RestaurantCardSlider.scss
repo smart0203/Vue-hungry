@@ -1,0 +1,30 @@
+.restaurant-card-slider {
+  .restaurant-card-slide {
+    width: 50%;
+
+    @apply mr-2;
+
+    @screen lg {
+      width: 20%;
+      margin: 0;
+    }
+  }
+
+  .swiper-button-next {
+    top: 40%;
+    right: 0;
+  }
+
+  .swiper-button-next::after {
+    content: none;
+  }
+
+  .swiper-button-prev {
+    top: 40%;
+    left: 0;
+  }
+
+  .swiper-button-prev::after {
+    content: none;
+  }
+}

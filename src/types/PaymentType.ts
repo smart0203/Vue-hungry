@@ -1,0 +1,13 @@
+// @ts-nocheck
+import {
+  SUPPORTED_PAYMENT_CC,
+  SUPPORTED_PAYMENT_QR,
+  SUPPORTED_PAYMENT_CC_QR,
+  SUPPORTED_PAYMENT_SHOPEE_PAY,
+  SUPPORTED_PAYMENT_TRUE_WALLET,
+} from "@/lib/constant";
+export type PaymentShopeePay = SUPPORTED_PAYMENT_SHOPEE_PAY;
+export type PaymentTrueWallet = SUPPORTED_PAYMENT_TRUE_WALLET;
+export type PaymentCC = SUPPORTED_PAYMENT_CC;
+export type PaymentQR = SUPPORTED_PAYMENT_QR;
+export type PaymentCCAndQR = SUPPORTED_PAYMENT_CC_QR;

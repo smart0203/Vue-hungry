@@ -1,0 +1,26 @@
+.featured-item-left,
+.featured-item-right {
+  height: 200px;
+  width: auto !important;
+}
+
+.featured-item-center {
+  @apply px-8;
+  width: 700px;
+  height: 250px;
+}
+
+.slider-next {
+  position: absolute;
+  top: 30%;
+  right: 0;
+  z-index: 10;
+  cursor: pointer;
+}
+.slider-prev {
+  position: absolute;
+  top: 30%;
+  left: 0;
+  z-index: 10;
+  cursor: pointer;
+}

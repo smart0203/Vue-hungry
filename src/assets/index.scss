@@ -1,0 +1,430 @@
+@import "./library-override.scss";
+@import "./css/TippyTheme.scss";
+
+// * {
+//   border: 1px solid pink;
+//   opacity: 1 !important;
+//   // visibility: visible !important;
+// }
+$hah: #bc64ff;
+$ayce: #fbee4d;
+$pp: #00d3c2;
+$bfp: #ffaa4b;
+$hs: #6abfff;
+$sm: #4174ff;
+$xp: #8fdce4;
+$hh-red: #df252a;
+$hh-gray: #ccc;
+
+:root {
+  --package-ayce: #{$ayce};
+  --package-hah: #{$hah};
+  --package-pp: #{$pp};
+  --package-bfp: #{$bfp};
+  --package-hs: #{$hs};
+  --package-sm: #{$sm};
+  --package-xp: #{$xp};
+  --main-red: #{$hh-red};
+  --main-gray: #{$hh-gray};
+}
+
+html {
+  scroll-behavior: smooth;
+  font-size: 15px;
+}
+
+body {
+  width: 100%;
+  height: 100%;
+  font-family: "Lato", sans-serif;
+  font-display: swap;
+}
+
+picture {
+  max-width: 100%;
+  height: auto;
+  display: block;
+
+  img {
+    width: 100%;
+    height: 100%;
+  }
+}
+
+.package-category {
+  display: inline-block;
+  width: 12px;
+  height: 12px;
+  border-radius: 50%;
+  margin-right: 0.5rem;
+
+  &.ayce {
+    background: var(--package-ayce);
+  }
+
+  &.hah {
+    background: var(--package-hah);
+  }
+
+  &.pp {
+    background: var(--package-pp);
+  }
+
+  &.bfp {
+    background: var(--package-bfp);
+  }
+
+  &.hs {
+    background: var(--package-hs);
+  }
+
+  &.sm {
+    background: var(--package-sm);
+  }
+
+  &.xp {
+    background: var(--package-xp);
+  }
+}
+
+.dark-red {
+  color: var(--main-red);
+}
+
+.bg-dark-red {
+  background-color: var(--main-red);
+}
+
+.bg-muted-dark-red {
+  background-color: lighten($hh-red, 10%);
+}
+
+.hover-dark-red:hover {
+  color: lighten($hh-red, 5%);
+}
+
+.hover-bg-dark-red:hover,
+.hover-bg-dark-red:focus {
+  background-color: lighten($hh-red, 5%);
+}
+
+.hover-bg-light-gray:hover {
+  background-color: #f8f9fa;
+}
+
+.hover-white:hover {
+  color: white;
+}
+
+.hh-black {
+  color: #263238;
+}
+
+.tag-color {
+  color: #0062fb;
+}
+
+.hh-shadow {
+  box-shadow: 0 0 21px 4px rgba(217, 217, 217, 1);
+}
+
+.hh-soft-shadow {
+  box-shadow: -1px 2px 25px rgba(0, 0, 0, 0.160784);
+}
+
+.capital-first-letter::first-letter {
+  text-transform: uppercase;
+}
+
+@screen lg {
+  .max-width {
+    max-width: 1280px;
+    margin-left: auto;
+    margin-right: auto;
+  }
+}
+
+.input-with-icon {
+  position: relative;
+
+  .input {
+    // min-height: 40px;
+  }
+
+  &.have-icon-left .input {
+    padding-left: 30px;
+  }
+
+  &.have-icon-right .input {
+    padding-right: 30px;
+  }
+
+  .icon {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+
+    &.icon-left {
+      left: 5px;
+      width: 20px;
+    }
+
+    &.icon-right {
+      right: 5px;
+      width: 25px;
+    }
+  }
+}
+
+// tiny scroll
+.tiny-scroll {
+  scrollbar-width: thin;
+  scrollbar-color: #c1c1c1 #fff;
+}
+
+.tiny-scroll::-webkit-scrollbar {
+  width: 5px;
+}
+
+.tiny-scroll::-webkit-scrollbar-track {
+  background: #fff;
+}
+
+.tiny-scroll::-webkit-scrollbar-thumb {
+  background-color: #c1c1c1;
+  border-radius: 7px;
+  border: 7px solid #fff;
+}
+
+// loader (from https://github.com/jlong/css-spinners)
+@-moz-keyframes loader {
+  0% {
+    -moz-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -moz-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@-webkit-keyframes loader {
+  0% {
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+@keyframes loader {
+  0% {
+    -moz-transform: rotate(0deg);
+    -ms-transform: rotate(0deg);
+    -webkit-transform: rotate(0deg);
+    transform: rotate(0deg);
+  }
+
+  100% {
+    -moz-transform: rotate(360deg);
+    -ms-transform: rotate(360deg);
+    -webkit-transform: rotate(360deg);
+    transform: rotate(360deg);
+  }
+}
+
+/* :not(:required) hides this rule from IE9 and below */
+.loader:not(:required) {
+  -moz-animation: loader 1250ms infinite linear;
+  -webkit-animation: loader 1250ms infinite linear;
+  animation: loader 1250ms infinite linear;
+  border: 4px solid;
+  border-color: var(--main-red);
+  border-right-color: transparent;
+  border-radius: 32px;
+  box-sizing: border-box;
+  display: inline-block;
+  position: relative;
+  overflow: hidden;
+  text-indent: -9999px;
+  width: 32px;
+  height: 32px;
+}
+
+.loader.small {
+  width: 18px;
+  height: 18px;
+  border-radius: 18px;
+}
+
+.loader.white {
+  border-color: white;
+  border-right-color: transparent;
+}
+// bounce button css animation
+
+.bounce-top {
+  animation: bounce-top 0.9s both;
+}
+
+@-webkit-keyframes bounce-top {
+  0% {
+    -webkit-transform: translateY(-45px);
+    transform: translateY(-45px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    opacity: 1;
+  }
+
+  24% {
+    opacity: 1;
+  }
+
+  40% {
+    -webkit-transform: translateY(-24px);
+    transform: translateY(-24px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  65% {
+    -webkit-transform: translateY(-12px);
+    transform: translateY(-12px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  82% {
+    -webkit-transform: translateY(-6px);
+    transform: translateY(-6px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  93% {
+    -webkit-transform: translateY(-4px);
+    transform: translateY(-4px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  25%,
+  55%,
+  75%,
+  87% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+    opacity: 1;
+  }
+}
+
+@keyframes bounce-top {
+  0% {
+    -webkit-transform: translateY(-45px);
+    transform: translateY(-45px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+    opacity: 1;
+  }
+
+  24% {
+    opacity: 1;
+  }
+
+  40% {
+    -webkit-transform: translateY(-24px);
+    transform: translateY(-24px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  65% {
+    -webkit-transform: translateY(-12px);
+    transform: translateY(-12px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  82% {
+    -webkit-transform: translateY(-6px);
+    transform: translateY(-6px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  93% {
+    -webkit-transform: translateY(-4px);
+    transform: translateY(-4px);
+    -webkit-animation-timing-function: ease-in;
+    animation-timing-function: ease-in;
+  }
+
+  25%,
+  55%,
+  75%,
+  87% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+  }
+
+  100% {
+    -webkit-transform: translateY(0);
+    transform: translateY(0);
+    -webkit-animation-timing-function: ease-out;
+    animation-timing-function: ease-out;
+    opacity: 1;
+  }
+}
+// vue enter / leave transition
+.fade-enter-active,
+.fade-leave-active {
+  transition: opacity 0.5s;
+}
+
+.fade-enter,
+.fade-leave-to /* .fade-leave-active below version 2.1.8 */ {
+  opacity: 0;
+}
+
+// clevertap css override
+#wizParDiv2 {
+  width: 300px !important;
+}
+
+// intl-tel-input css input full width
+.iti {
+  width: 100%;
+}
+
+@media only screen and (max-width: 768px) {
+  html {
+    max-width: 600px !important;
+    margin: auto;
+  }
+
+  //override vue-js modal max width
+  body.v--modal-block-scroll {
+    max-width: 600px !important;
+  }
+
+  .bottom-sheet-wrapper {
+    max-width: 600px;
+    left: 50%;
+    transform: translateX(-50%);
+  }
+}
